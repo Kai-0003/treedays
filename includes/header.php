@@ -35,8 +35,8 @@ $activePage = $activePage ?? '';
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Tailwind CSS CDN -->
-    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Local Tailwind CSS (Offline-friendly) -->
+    <script src="assets/js/tailwind.js"></script>
     <script>
         tailwind.config = {
             theme: {
@@ -70,12 +70,15 @@ $activePage = $activePage ?? '';
 <body class="bg-base text-gray-100 flex flex-col min-h-full font-sans antialiased">
 
     <!-- Desktop & Mobile Top Header Bar -->
-    <header class="sticky top-0 z-50 bg-base/80 backdrop-blur-xl border-b border-darkBorder">
+    <header class="sticky top-0 z-50 bg-base/85 backdrop-blur-xl border-b border-darkBorder">
         <div class="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between">
             
-            <!-- Logo -->
-            <a href="dashboard.php" class="flex items-center gap-2 text-xl font-extrabold text-white">
-                <i class="fa-solid fa-tree text-primary drop-shadow-[0_0_8px_var(--primary-glow)] animate-bounce"></i>
+            <!-- Interactive Logo (acts as menu toggler on mobile when logged in) -->
+            <a href="dashboard.php" 
+               id="logo-link" 
+               onclick="handleLogoClick(event)" 
+               class="flex items-center gap-2 text-xl font-extrabold text-white select-none focus:outline-none">
+                <i class="fa-solid fa-tree text-primary drop-shadow-[0_0_8px_var(--primary-glow)] animate-pulse"></i>
                 <span>Eco<span class="text-primary">Fit</span></span>
             </a>
             
@@ -85,8 +88,11 @@ $activePage = $activePage ?? '';
                     <a href="dashboard.php" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 <?php echo ($activePage === 'dashboard') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
                         <i class="fa-solid fa-house"></i> Home
                     </a>
-                    <a href="stepbreakfast.php" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 <?php echo ($activePage === 'stepbreakfast') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
-                        <i class="fa-solid fa-utensils"></i> StepBreakfast
+                    <a href="steps.php" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 <?php echo ($activePage === 'steps') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                        <i class="fa-solid fa-shoe-prints"></i> Steps
+                    </a>
+                    <a href="breakfast.php" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 <?php echo ($activePage === 'breakfast') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                        <i class="fa-solid fa-utensils"></i> Breakfast
                     </a>
                     <a href="sleep.php" class="px-4 py-2 rounded-lg text-sm font-semibold transition-all duration-200 flex items-center gap-2 <?php echo ($activePage === 'sleep') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
                         <i class="fa-solid fa-moon"></i> Sleep
@@ -100,67 +106,133 @@ $activePage = $activePage ?? '';
                 </nav>
 
                 <!-- Right-side actions -->
-                <div class="flex items-center gap-4">
+                <div class="flex items-center gap-2 sm:gap-4">
                     <!-- Points -->
-                    <div class="flex items-center gap-2 px-3 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent font-bold" id="header-points-badge">
-                        <i class="fa-solid fa-coins animate-pulse"></i>
-                        <span class="points-val text-sm"><?php echo number_format($currentUser['total_points']); ?></span>
-                        <span class="text-xs opacity-75">pts</span>
+                    <div class="flex items-center gap-1.5 sm:gap-2 px-2.5 sm:px-3 py-1.5 rounded-full bg-accent/10 border border-accent/30 text-accent font-bold" id="header-points-badge">
+                        <i class="fa-solid fa-coins animate-pulse text-xs sm:text-sm"></i>
+                        <span class="points-val text-xs sm:text-sm"><?php echo number_format($currentUser['total_points']); ?></span>
+                        <span class="text-[10px] sm:text-xs opacity-75">pts</span>
                     </div>
 
                     <!-- User Profile Dropdown Button -->
                     <div class="relative" id="profile-dropdown-container">
                         <button onclick="toggleProfileDropdown()" class="flex items-center gap-2 focus:outline-none group">
                             <!-- Avatar with Gradient -->
-                            <div class="w-9 h-9 rounded-full bg-gradient-to-tr from-primary to-teal-500 flex items-center justify-center text-white font-black text-xs uppercase shadow-md shadow-primary/20 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all duration-200">
+                            <div class="w-8 h-8 sm:w-9 sm:h-9 rounded-full bg-gradient-to-tr from-primary to-teal-500 flex items-center justify-center text-white font-black text-xs uppercase shadow-md shadow-primary/20 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all duration-200">
                                 <?php echo $userInitials; ?>
                             </div>
                         </button>
                         
                         <!-- Dropdown Menu -->
-                        <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-48 bg-surfaceSolid border border-darkBorder rounded-xl shadow-2xl p-2 z-50 animate-slideIn">
+                        <div id="profile-dropdown" class="hidden absolute right-0 mt-3 w-44 sm:w-48 bg-surfaceSolid border border-darkBorder rounded-xl shadow-2xl p-2 z-50 animate-slideIn">
                             <div class="px-3 py-2 border-b border-darkBorder mb-1">
-                                <p class="text-xs text-gray-500">Logged in as</p>
-                                <p class="text-sm font-bold text-white truncate"><?php echo htmlspecialchars($currentUser['username']); ?></p>
+                                <p class="text-[10px] text-gray-500">Logged in as</p>
+                                <p class="text-xs sm:text-sm font-bold text-white truncate"><?php echo htmlspecialchars($currentUser['username']); ?></p>
                             </div>
-                            <a href="dashboard.php" class="flex items-center gap-2 px-3 py-2 text-sm text-gray-300 hover:bg-white/5 rounded-lg transition-all duration-200">
+                            <a href="dashboard.php" class="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm text-gray-300 hover:bg-white/5 rounded-lg transition-all duration-200">
                                 <i class="fa-solid fa-user-gear text-gray-400"></i> Profile
                             </a>
-                            <a href="index.php?action=logout" class="flex items-center gap-2 px-3 py-2 text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200">
+                            <a href="index.php?action=logout" class="flex items-center gap-2 px-3 py-2 text-xs sm:text-sm text-red-400 hover:bg-red-500/10 rounded-lg transition-all duration-200">
                                 <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
                             </a>
                         </div>
                     </div>
                 </div>
             <?php else: ?>
-                <div class="text-sm font-medium text-gray-400">
+                <div class="text-xs sm:text-sm font-medium text-gray-400">
                     Grow Your Garden by Staying Fit
                 </div>
             <?php endif; ?>
         </div>
     </header>
 
-    <!-- Mobile Bottom Navigation (Visible only on Mobile md:hidden) -->
+    <!-- Mobile Off-Canvas Side Drawer (Collapsible) - Positioned Outside <header> to ignore containing block -->
     <?php if (is_logged_in()): ?>
-        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-base/90 backdrop-blur-xl border-t border-darkBorder px-4 h-16 flex items-center justify-around">
-            <a href="dashboard.php" class="flex flex-col items-center gap-0.5 text-xs font-bold transition-all duration-200 <?php echo ($activePage === 'dashboard') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
-                <i class="fa-solid fa-house text-lg"></i>
+        <!-- Backdrop Mask -->
+        <div id="mobile-menu-backdrop" 
+             onclick="toggleMobileMenu()" 
+             class="fixed inset-0 z-40 bg-black/60 opacity-0 pointer-events-none transition-opacity duration-300 md:hidden"></div>
+             
+        <!-- Drawer Body -->
+        <div id="mobile-menu" 
+             class="fixed top-0 left-0 bottom-0 w-72 max-w-[80vw] z-50 bg-[#090d16] border-r border-darkBorder/30 flex flex-col transform -translate-x-full transition-transform duration-300 ease-in-out md:hidden shadow-2xl">
+             
+             <!-- Drawer Header -->
+             <div class="h-16 px-6 border-b border-darkBorder/40 flex items-center justify-between shrink-0">
+                 <div class="flex items-center gap-2 text-lg font-extrabold text-white">
+                     <i class="fa-solid fa-tree text-primary"></i>
+                     <span>Eco<span class="text-primary">Fit</span></span>
+                 </div>
+                 <button onclick="toggleMobileMenu()" class="text-gray-400 hover:text-white p-1 rounded-lg border border-darkBorder/30 focus:outline-none">
+                     <i class="fa-solid fa-xmark text-base"></i>
+                 </button>
+             </div>
+             
+             <!-- Drawer Scrollable Links -->
+             <div class="flex-1 py-4 px-3 space-y-1 overflow-y-auto">
+                 <a href="dashboard.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'dashboard') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                     <i class="fa-solid fa-house w-5 text-center"></i> Home
+                 </a>
+                     <a href="steps.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'steps') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                         <i class="fa-solid fa-shoe-prints w-5 text-center"></i> Steps
+                     </a>
+                     <a href="breakfast.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'breakfast') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                         <i class="fa-solid fa-utensils w-5 text-center"></i> Breakfast
+                     </a>
+                 <a href="sleep.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'sleep') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                     <i class="fa-solid fa-moon w-5 text-center"></i> Sleep
+                 </a>
+                 <a href="shop.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'shop') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                     <i class="fa-solid fa-store w-5 text-center"></i> Shop
+                 </a>
+                 <a href="calendar.php" class="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold <?php echo ($activePage === 'calendar') ? 'bg-primary/10 text-primary-light border border-primary/20' : 'text-gray-400 hover:text-white hover:bg-white/5'; ?>">
+                     <i class="fa-solid fa-calendar-days w-5 text-center"></i> Calendar
+                 </a>
+             </div>
+             
+             <!-- Drawer Footer -->
+             <div class="p-4 border-t border-darkBorder/40 bg-surfaceSolid/30 shrink-0">
+                 <div class="flex items-center gap-3 mb-4">
+                     <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-primary to-teal-500 flex items-center justify-center text-white font-black text-xs uppercase shadow-md shadow-primary/20">
+                         <?php echo $userInitials; ?>
+                     </div>
+                     <div class="truncate">
+                         <p class="text-[10px] text-gray-500">Logged in as</p>
+                         <p class="text-xs sm:text-sm font-bold text-white truncate"><?php echo htmlspecialchars($currentUser['username']); ?></p>
+                     </div>
+                 </div>
+                 <a href="index.php?action=logout" class="w-full py-2.5 rounded-xl text-xs font-bold text-red-400 border border-red-500/30 bg-red-500/5 hover:bg-red-500/10 flex items-center justify-center gap-2 transition-all duration-200">
+                     <i class="fa-solid fa-arrow-right-from-bracket"></i> Log Out
+                 </a>
+             </div>
+        </div>
+    <?php endif; ?>
+
+    <!-- Mobile Bottom Navigation (Helper toolbar) -->
+    <?php if (is_logged_in()): ?>
+        <nav class="md:hidden fixed bottom-0 left-0 right-0 z-35 bg-base/90 backdrop-blur-xl border-t border-darkBorder px-4 h-16 flex items-center justify-around">
+            <a href="dashboard.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'dashboard') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-house text-base"></i>
                 <span>Home</span>
             </a>
-            <a href="stepbreakfast.php" class="flex flex-col items-center gap-0.5 text-xs font-bold transition-all duration-200 <?php echo ($activePage === 'stepbreakfast') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
-                <i class="fa-solid fa-utensils text-lg"></i>
-                <span>StepBreakfast</span>
+            <a href="steps.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'steps') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-shoe-prints text-base"></i>
+                <span>Steps</span>
             </a>
-            <a href="sleep.php" class="flex flex-col items-center gap-0.5 text-xs font-bold transition-all duration-200 <?php echo ($activePage === 'sleep') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
-                <i class="fa-solid fa-moon text-lg"></i>
+            <a href="breakfast.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'breakfast') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-utensils text-base"></i>
+                <span>Breakfast</span>
+            </a>
+            <a href="sleep.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'sleep') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-moon text-base"></i>
                 <span>Sleep</span>
             </a>
-            <a href="shop.php" class="flex flex-col items-center gap-0.5 text-xs font-bold transition-all duration-200 <?php echo ($activePage === 'shop') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
-                <i class="fa-solid fa-store text-lg"></i>
+            <a href="shop.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'shop') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-store text-base"></i>
                 <span>Shop</span>
             </a>
-            <a href="calendar.php" class="flex flex-col items-center gap-0.5 text-xs font-bold transition-all duration-200 <?php echo ($activePage === 'calendar') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
-                <i class="fa-solid fa-calendar-days text-lg"></i>
+            <a href="calendar.php" class="flex flex-col items-center gap-0.5 text-[10px] font-bold transition-all duration-200 <?php echo ($activePage === 'calendar') ? 'text-primary-light' : 'text-gray-500 hover:text-white'; ?>">
+                <i class="fa-solid fa-calendar-days text-base"></i>
                 <span>Calendar</span>
             </a>
         </nav>

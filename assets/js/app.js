@@ -16,6 +16,47 @@ function toggleProfileDropdown() {
     }
 }
 
+/**
+ * Toggle mobile side drawer and backdrop
+ */
+function toggleMobileMenu() {
+    const mobileMenu = document.getElementById('mobile-menu');
+    const backdrop = document.getElementById('mobile-menu-backdrop');
+    if (mobileMenu && backdrop) {
+        const isOpen = mobileMenu.classList.contains('translate-x-0');
+        if (isOpen) {
+            // Close Drawer
+            mobileMenu.classList.remove('translate-x-0');
+            mobileMenu.classList.add('-translate-x-full');
+            
+            // Fade Out Backdrop
+            backdrop.classList.remove('opacity-100', 'pointer-events-auto');
+            backdrop.classList.add('opacity-0', 'pointer-events-none');
+        } else {
+            // Open Drawer
+            mobileMenu.classList.remove('-translate-x-full');
+            mobileMenu.classList.add('translate-x-0');
+            
+            // Fade In Backdrop
+            backdrop.classList.remove('opacity-0', 'pointer-events-none');
+            backdrop.classList.add('opacity-100', 'pointer-events-auto');
+        }
+    }
+}
+
+/**
+ * Intercept logo click on mobile to toggle menu instead of navigating
+ */
+function handleLogoClick(event) {
+    if (window.innerWidth < 768) {
+        const mobileMenu = document.getElementById('mobile-menu');
+        if (mobileMenu) {
+            event.preventDefault();
+            toggleMobileMenu();
+        }
+    }
+}
+
 // Close dropdown when clicking outside
 window.addEventListener('click', (e) => {
     const container = document.getElementById('profile-dropdown-container');
