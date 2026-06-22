@@ -1,6 +1,6 @@
 # EcoFit - Gamified Fitness & Nature Project Explanation (မြန်မာဘာသာ)
 
-ဤ project သည် အသုံးပြုသူများ၏ နေ့စဉ်ကိုယ်လက်လှုပ်ရှားမှုများကို ဂိမ်းကစားသကဲ့သို့ ပျော်စရာကောင်းအောင် ပြုလုပ်ထားသော (Gamified) ကျန်းမာရေးနှင့် သဘာဝပတ်ဝန်းကျင်ဆိုင်ရာ Web Application တစ်ခု ဖြစ်ပါသည်။
+ဤ project သည် အသုံးပြုသူများ၏ နေ့စဉ်ကိုယ်လက်လှုပ်ရှားမှုများကို ဂိမ်းကစားသကဲ့သို့ ပျော်စရာကောင်းအောင် ပြုလုပ်ထားသော (Gamified) ကျန်းမာရေးနှင့် သဘာဝပတ်ဝန်းကျင်ဆိုင်ရာ Web Application တစ်ခု ဖြစ်ပါသည်။ အသုံးပြုသူများသည် ၎င်းတို့၏ ခြေလှမ်းများ၊ စားသုံးသည့် အစားအစာများနှင့် အိပ်စက်ချိန်များကို မှတ်တမ်းတင်ပြီး ရွှေဒင်္ဂါးအမှတ်များ (Points) စုဆောင်းကာ မိမိတို့၏ ကိုယ်ပိုင် ဥယျာဉ်ခြံမြေကွက်လပ်တွင် သစ်ပင်များကို ဝယ်ယူစိုက်ပျိုးနိုင်မည် ဖြစ်သည်။
 
 ---
 
@@ -10,7 +10,7 @@
 
 ```mermaid
 graph TD
-    A[အသုံးပြုသူ ကိုယ်လက်လှုပ်ရှားမှု လုပ်ဆောင်ခြင်း] --> B[Daily Quests Progress တင်ခြင်း]
+    A[အသုံးပြုသူ ကိုယ်လက်လှုပ်ရှားမှု လုပ်ဆောင်ခြင်း] --> B[Daily Quests & Metrics တင်ခြင်း]
     B --> C[Quest ပြီးမြောက်ပါက Points ရရှိခြင်း]
     C --> D[ရရှိလာသော Points များဖြင့် Tree Shop မှ သစ်ပင်များ ဝယ်ယူခြင်း]
     D --> E[သစ်ပင်များကို မိမိ၏ Virtual Garden Grid တွင် စိုက်ပျိုးခြင်း]
@@ -26,72 +26,87 @@ end
 
 ## ၂။ Directory ဖွဲ့စည်းပုံနှင့် ဖိုင်တစ်ခုချင်းစီ၏ တာဝန်များ
 
-Project folder တည်ဆောက်ပုံမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -
+Project ၏ တည်ဆောက်ပုံမှာ အောက်ပါအတိုင်း ဖြစ်ပါသည် -
 
 ```text
 /gamified-fitness-app
 │
-├── /assets                # Static files (CSS, JS)
+├── /assets                # Static assets (CSS, JS)
 │   ├── /css
-│   │   └── style.css      # Gradient, Glassmorphic UI များနှင့် sway animations များ
+│   │   └── style.css      # Custom HSL design tokens, Glassmorphic UI, Breeze animation များနှင့် Light Mode configuration များ
 │   └── /js
-│       └── app.js         # AJAX API triggers၊ Confetti effect နှင့် client-side interactive logic များ
+│       └── app.js         # Interactive JS code (Confetti effect, AJAX requests, Theme/Language cookie switcher)
 │
-├── /includes              # Reusable PHP codes များ
-│   ├── db.php             # Database connection (PDO) နှင့် Session Helpers များ
-│   ├── header.php         # HTML header ခေါင်းစဉ်နှင့် Navigation bar
-│   ├── footer.php         # HTML footer ပိတ်သတ်ချက်နှင့် JS link
-│   └── tree_svgs.php      # သစ်ပင်ပုံများကို responsive SVG markup ဖြင့် ဆွဲပေးသော file
+├── /includes              # PHP library များနှင့် Reusable templates များ
+│   ├── db.php             # Database connection (PDO) နှင့် session based control helpers များ
+│   ├── lang.php           # Multi-language mapping module (ဘာသာစကား ၄ မျိုး)
+│   ├── header.php         # Global navigation, Mobile side drawer, desktop responsive headers
+│   ├── footer.php         # Footer component များနှင့် core JavaScript dependencies များ
+│   └── tree_svgs.php      # သစ်ပင်ပုံများကို responsive SVG codes ဖြင့် dynamic ဆွဲပေးသော module
 │
-├── /api                   # Web API endpoints (JSON return ပေးသော ဖိုင်များ)
-│   ├── update_quest.php   # Quest တိုးတက်မှုကို MySQL တွင် save ပြီး Point ပေးသော API
-│   └── buy_tree.php       # Point နုတ်ပြီး သစ်ပင်စိုက်ပျိုးပေးသော API
+├── /api                   # Back-end AJAX interfaces (JSON data ပြန်လည်ပေးပို့သည့် APIs)
+│   ├── update_quest.php   # Quest point updates များကို database တွင် safe ဖြစ်စေရန် atomic transaction များဖြင့် ရေးသွင်းပေးသည်
+│   └── buy_tree.php       # Points များကို တွက်ချက်နုတ်ယူပြီး သစ်ပင်အသစ် စိုက်ပျိုးပေးသည့် API
 │
-├── index.php              # စတင်ဝင်ရောက်မည့် စာမျက်နှာ (Login / Registration)
-├── dashboard.php          # Quests များနှင့် Garden စိုက်ပျိုးမြေပြင်ကို ပြသပေးသော Dashboard
-└── shop.php               # သစ်ပင်များစာရင်းနှင့် ဈေးနှုန်းများကို ပြသပေးသော Store
+├── /uploads/breakfast     # အသုံးပြုသူ တင်လိုက်သော နံနက်စာ ဓာတ်ပုံများကို သိမ်းဆည်းသည့် နေရာ
+│
+├── index.php              # Login / Register interface (Authentication page)
+├── dashboard.php          # နေ့စဉ် quests တိုးတက်မှုနှင့် စိုက်ပျိုးထားသော ဥယျာဉ်ခြံမြေ grid ကို ပြသပေးသော ဗဟိုစာမျက်နှာ
+├── steps.php              # ခြေလှမ်းအကွာအဝေး၊ calories လောင်ကျွမ်းမှု တွက်ချက်ပေးပြီး quest update လုပ်ပေးသော စာမျက်နှာ
+├── breakfast.php          # နံနက်စာစားသောက်မှုမှတ်တမ်း၊ ဓာတ်ပုံရိုက်တင်ခြင်းနှင့် calories level များကို created_at ဖြင့် dynamic ပြသသော စာမျက်နှာ
+├── sleep.php              # အိပ်စက်ချိန်စက်ဝန်း၊ deep/REM sleep analytics များနှင့် recovery ratings များကို ပြသပေးသော စာမျက်နှာ
+├── shop.php               # သစ်ပင်အမျိုးအစားများ စာရင်းနှင့် dynamic points balance သုံးပြီး စိုက်ပျိုးရန် သစ်ပင်ဝယ်ယူနိုင်သော store စာမျက်နှာ
+└── calendar.php           # အသုံးပြုသူ၏ နေ့စဉ် တစိုက်မတ်မတ် လေ့ကျင့်ခန်းလုပ်ဆောင်မှုများကို ခြေရာခံပြသသော Calendar widget
 ```
 
 ---
 
-## ၃။ Database ပုံစံနှင့် ပတ်သက်မှုများ (Database Architecture)
+## ၃။ အဓိက လုပ်ဆောင်ချက်များ (Key Features)
 
-Database table ၅ ခုသည် တစ်ခုနှင့်တစ်ခု အောက်ပါအတိုင်း ချိတ်ဆက်ထားပါသည် -
+### (က) ဘာသာစကား (၄) မျိုး ပြောင်းလဲအသုံးပြုနိုင်ခြင်း (Multi-Language Engine)
+- **ဘာသာစကားများ**: မြန်မာ (`my`)၊ အင်္ဂလိပ် (`en`)၊ ဂျပန် (`ja`) နှင့် ဗီယက်နမ် (`vi`) တို့ကို support လုပ်ပါသည်။
+- **အကောင်အထည်ဖော်ပုံ**: [includes/lang.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/includes/lang.php) တွင် dictionary keyword map များဖြင့် dynamic content translation ကို script များအတွင်း `__('key_name')` function ဖြင့် auto translation ပေးထားပြီး runtime တွင် session နှင့် သက်တမ်း ၁ နှစ်ရှိသော long-term cookie များဖြင့် ရွေးချယ်မှုကို auto loading ပြုလုပ်ပေးပါသည်။
 
-* **`users` Table**: User အချက်အလက်များနှင့် လက်ရှိစုဆောင်းမိထားသော point စုစုပေါင်း (`total_points`) ကို သိမ်းဆည်းသည်။
-* **`daily_quests` Table**: နေ့စဉ်လုပ်ဆောင်ရမည့် quest ပုံစံခွက်များ (ဥပမာ- Target တန်ဖိုး၊ Points reward) ကို သတ်မှတ်သိမ်းဆည်းထားသည်။
-* **`user_quests` Table**: User တစ်ယောက်ချင်းစီ၏ နေ့စဉ် တိုးတက်မှု (progress) နှင့် ပြီးမြောက်ခြင်း ရှိ/မရှိ (`is_completed`) ကို ရက်စွဲအလိုက် စောင့်ကြည့်မှတ်တမ်းတင်သည်။
-* **`tree_shop` Table**: Shop တွင် ဝယ်ယူနိုင်သော သစ်ပင်အမျိုးအစားများ၊ ၎င်းတို့၏ ဈေးနှုန်းနှင့် visual code များကို သတ်မှတ်ပေးထားသည်။
-* **`user_garden` Table**: User တစ်ယောက်စီ ပိုင်ဆိုင်ပြီး စိုက်ပျိုးထားသော သစ်ပင်များနှင့် ၎င်းတို့စိုက်ထားသည့် နေရာသြဒီနိတ် (`x_coordinate`, `y_coordinate`) ကို မှတ်သားပေးသည်။
+### (ခ) Dark Mode & Light Mode Theme ပြောင်းလဲနိုင်ခြင်း
+- **Theme control**: Tailwind config style layout များကို class level (`html.dark` သို့မဟုတ် `html.light`) ဖြင့် CSS transition variables များသုံးကာ ညင်သာစွာ ပြောင်းလဲပေးပါသည်။
+- **Persistence**: User ရွေးချယ်လိုက်သော theme mode အား cookie ဖြင့် သိမ်းဆည်းပေးထားသဖြင့် Page update လုပ်ချိန် သို့မဟုတ် အခြားစာမျက်နှာသို့ သွားချိန်တွင် Screen အဖြူရောင် flashing ဖြစ်ခြင်းကို အပြည့်အဝ ကာကွယ်ပေးပါသည်။
 
----
+### (ဂ) Steps Tracker Module
+- [steps.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/steps.php) တွင် အသုံးပြုသူမှ နေ့စဉ်ခြေလှမ်းများကို ရိုက်ထည့်လိုက်သည်နှင့် (ခြေလှမ်း ၁ လှမ်းလျှင် ၀.၀၀၀၈ ကီလိုမီတာ နှင့် ၀.၀၄ calories နှုန်းဖြင့်) dynamic calculator သုံးကာ distance နှင့် calories ကို realtime တွက်ချက်ပေးပါသည်။ ၎င်းအချက်အလက်များကို နေ့စဉ် Quest database သို့ dynamic stage updates ပေးပို့ပေးပါသည်။
 
-## ၄။ အဓိက လုပ်ဆောင်ချက်များ၏ ကုဒ်အလုပ်လုပ်ပုံ (Core Logic Flow)
+### (ဃ) Breakfast Tracker (နံနက်စာမှတ်တမ်းနှင့် ပုံတင်စနစ်)
+- [breakfast.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/breakfast.php) တွင် အသုံးပြုသူသည် နံနက်စာ စားသုံးခဲ့သော အစားအစာအမည်၊ ကယ်လိုရီတန်ဖိုးများနှင့်အတူ ဖုန်း/ကွန်ပျူတာ ကင်မရာမှတစ်ဆင့် ဓာတ်ပုံရိုက်ကူးခြင်း (သို့မဟုတ်) ဖိုင်တင်ခြင်း ပြုလုပ်နိုင်ပါသည်။
+- တင်လိုက်သော ပုံများကို local directory ဖြစ်သည့် `/uploads/breakfast/` ထဲတွင် standard extension filter များ (JPG, JPEG, PNG, WEBP) နှင့် လုံခြုံရေးအရ size restriction (5MB အထိ) စနစ်များဖြင့် လုံခြုံစွာ upload တင်ပေးပြီး database ထဲတွင် User-id ချိတ်ဆက်ကာ timestamp `created_at` နှင့်တကွ အချိန်နှင့်တစ်ပြေးညီ log charts ပြသပေးပါသည်။
 
-### (က) Quest progress အပ်ဒိတ်လုပ်ခြင်းနှင့် Point ပေးခြင်း (Quest Completion)
-1. User က Dashboard ပေါ်တွင် ၎င်း၏တိုးတက်မှု (ဥပမာ- ပြေးပြီးသော အကွာအဝေး) ကို ရိုက်ထည့်ပြီး "Update" ကို နှိပ်သည်။
-2. Javascript `app.js` မှတစ်ဆင့် POST Request ဖြင့် [api/update_quest.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/api/update_quest.php) သို့ ပေးပို့သည်။
-3. PHP ဘက်တွင် `PDO Prepared Statement` ကိုသုံး၍ **SQL Injection ကို ကာကွယ်**ပြီး တန်ဖိုးများကို စစ်ဆေးသည်။
-4. လက်ရှိ progress သည် target တန်ဖိုးထက် ပြည့်မီသွားပါက `MySQL Transaction` ကို စတင်ပါသည် -
-   - `user_quests` table တွင် Quest ကို `is_completed = 1` ပြောင်းလဲသည်။
-   - `users` table တွင် User ၏ `total_points` ကို သတ်မှတ်ထားသော point အတိုင်း တိုးမြှင့်ပေးသည်။
-5. လုပ်ငန်းစဉ်အောင်မြင်ပါက Client ဆီသို့ JSON format ဖြင့် အကြောင်းပြန်ပေးပြီး Javascript မှ **Confetti (အောင်ပွဲခံပန်းပွင့်လေးများ) ဖြန်းပေးခြင်း** နှင့် dynamic points update ကို visual ပြသပေးသည်။
-
-### (ခ) သစ်ပင်ဝယ်ယူခြင်းနှင့် စိုက်ပျိုးခြင်း (Tree Purchasing)
-1. User သည် Dashboard ပေါ်ရှိ စိုက်ပျိုးမြေကွက်လပ် ($6 \times 6$ grid) မှ လွတ်နေသော နေရာတစ်ခုခုကို နှိပ်သည်။
-2. ထိုအခါ quick-plant overlay ပေါ်လာပြီး ဝယ်ယူလိုသည့်သစ်ပင်ကို ရွေးချယ်ကာ "Plant Tree" ကို နှိပ်သည်။
-3. ၎င်းသည် [api/buy_tree.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/api/buy_tree.php) သို့ API လှမ်းခေါ်သည်။
-4. PHP ဘက်မှ စစ်ဆေးမှုများ ပြုလုပ်သည် -
-   - ရွေးချယ်ထားသော grid coordinate `(x, y)` တွင် အခြားသစ်ပင် ရှိမနေကြောင်း စစ်ဆေးသည်။
-   - User တွင် သစ်ပင်ဖိုး လုံလောက်သော points ရှိ/မရှိ စစ်ဆေးသည်။
-5. အားလုံးကိုက်ညီပါက `MySQL Transaction` ဖြင့် -
-   - `users` table ထဲရှိ user ၏ point ထဲမှ သစ်ပင်ဖိုးကို နှုတ်ယူသည်။
-   - `user_garden` table ထဲသို့ သစ်ပင်အသစ် စိုက်ပျိုးမှုမှတ်တမ်းကို `x_coordinate` နှင့် `y_coordinate` သတ်မှတ်ချက်ဖြင့် ထည့်သွင်းသည်။
-6. အောင်မြင်ပါက Browser ပေါ်တွင် Page reload မလုပ်ဘဲ ချက်ချင်းပင် HTML အကွက်ထဲသို့ **သက်ဆိုင်ရာ SVG သစ်ပင်ပုံရိပ်ကို ထည့်သွင်းပေးပြီး** points badge ကို update ပြုလုပ်သည်။
+### (င) Sleep Tracker & Quality Score
+- [sleep.php](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/sleep.php) တွင် အိပ်ရာဝင်ချိန်၊ အိပ်ရာထချိန်နှင့် ၎င်းတို့၏ sleep quality rating များကို ထည့်သွင်းမှတ်တမ်းတင်နိုင်ပြီး sleep logs analytical charts များကို လှပစွာ ပြသပေးပါသည်။
 
 ---
 
-## ၅။ Visual Design နှင့် Animation များအကြောင်း
+## ၄။ Database Architecture (Database ပုံစံနှင့် ပတ်သက်မှုများ)
+
+Database schemas များကို [mysql.sql](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/mysql.sql) နှင့် [breakfast_table.sql](file:///c:/Users/HANWAITUN/OneDrive%20-%20yamaguchigakuen/Desktop/gamified-fitness-app/breakfast_table.sql) တွင် အောက်ပါအတိုင်း ဖွဲ့စည်းထားပါသည် -
+
+### Database Tables နှင့် ၎င်းတို့၏ ဆက်သွယ်မှုများ
+
+1. **`users` Table**: User အချက်အလက်များနှင့် ၎င်းတို့ပိုင်ဆိုင်သည့် `total_points` ကို သိမ်းဆည်းသည်။
+2. **`daily_quests` Table**: နေ့စဉ်လုပ်ဆောင်ရမည့် quest ပုံစံခွက်များ (ဥပမာ- Target တန်ဖိုး၊ Points reward) ကို သတ်မှတ်သိမ်းဆည်းထားသည်။
+3. **`user_quests` Table**: User တစ်ယောက်ချင်းစီ၏ နေ့စဉ် တိုးတက်မှု (progress) နှင့် ပြီးမြောက်ခြင်း ရှိ/မရှိ (`is_completed`) ကို ရက်စွဲအလိုက် စောင့်ကြည့်မှတ်တမ်းတင်သည်။
+4. **`tree_shop` Table**: Shop တွင် ဝယ်ယူနိုင်သော သစ်ပင်အမျိုးအစားများ၊ ၎င်းတို့၏ ဈေးနှုန်းနှင့် visual code များကို သတ်မှတ်ပေးထားသည်။
+5. **`user_garden` Table**: User တစ်ယောက်စီ ပိုင်ဆိုင်ပြီး စိုက်ပျိုးထားသော သစ်ပင်များနှင့် ၎င်းတို့စိုက်ထားသည့် နေရာသြဒီနိတ် (`x_coordinate`, `y_coordinate`) ကို မှတ်သားပေးသည်။
+6. **`breakfast_logs` Table**: User တစ်ယောက်ချင်းစီ တင်လိုက်သော နံနက်စာပုံလမ်းကြောင်း (`image_path`)၊ meal_name၊ calories နှင့် created_at အချိန်တို့ကို dynamic link ဖြင့် ဆက်သွယ်သိမ်းဆည်းပေးသည်။
+
+---
+
+## ၅။ စနစ်ပိုင်းဆိုင်ရာ ပိုမိုကောင်းမွန်အောင် ပြင်ဆင်မှုများ (System Optimization)
+
+### database transaction error ပြဿနာကို ဖြေရှင်းထားပုံ (Transaction Safety)
+MySQL setup အချို့တွင် default autocommit တန်ဖိုးပိတ်ထားလျှင် (`autocommit = 0`) PDO သည် SQL query တစ်ခု စတင်သည်နှင့် implicit transaction ကို background ၌ auto logic ဖြင့် စတင်ထားရှိပြီး ဖြစ်တတ်ပါသည်။ ထိုအချိန်မျိုးတွင် explicit transaction ဖြစ်သော `$pdo->beginTransaction()` ကို ထပ်မံခေါ်ဆိုမိပါက "active transaction" error တက်တတ်ပါသည်။ 
+၎င်းပြဿနာကို ဖြေရှင်းရန်အတွက် application တစ်ခုလုံးရှိ database update modules များကို transaction မစတင်မီ check helper logic ဖြစ်သော `if (!$pdo->inTransaction())` ဖြင့် လုံခြုံစွာ ဝန်းရံပြင်ဆင်ထားပါသည်။
+
+---
+
+## ၆။ Visual Design နှင့် Animation များအကြောင်း
 
 - **Glassmorphism**: UI တစ်ခုလုံးကို ဆွဲဆောင်မှုရှိစေရန် transparent မှုန်ဝါးဝါးနောက်ခံပုံစံ (`backdrop-filter: blur(12px)`) ဖြင့် ပြင်ဆင်ထားသည်။
 - **Breeze Animation**: စိုက်ပျိုးပြီးသော SVG သစ်ပင်များကို တောင့်တောင့်ကြီးမဖြစ်နေစေဘဲ တကယ့်သစ်ပင်များ လေတိုက်၍ ယိမ်းနွဲ့နေသကဲ့သို့ ယိမ်းယိုင်နေသော animation (`transform-origin: bottom center` ဖြင့် လှုပ်ရှားစေခြင်း) ကို CSS `@keyframes breeze` သုံးပြီး ဖန်တီးထားသည်။
