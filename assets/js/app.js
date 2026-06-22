@@ -6,6 +6,25 @@
 let selectedX = -1;
 let selectedY = -1;
 
+/**
+ * Toggle user profile dropdown menu
+ */
+function toggleProfileDropdown() {
+    const dropdown = document.getElementById('profile-dropdown');
+    if (dropdown) {
+        dropdown.classList.toggle('hidden');
+    }
+}
+
+// Close dropdown when clicking outside
+window.addEventListener('click', (e) => {
+    const container = document.getElementById('profile-dropdown-container');
+    const dropdown = document.getElementById('profile-dropdown');
+    if (container && dropdown && !container.contains(e.target)) {
+        dropdown.classList.add('hidden');
+    }
+});
+
 // Document Ready Bootstrap
 document.addEventListener('DOMContentLoaded', () => {
     // Check if redirecting from shop with plant_tree_id

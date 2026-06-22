@@ -104,89 +104,134 @@ $pageTitle = "Welcome to EcoFit - Login / Register";
 require_once 'includes/header.php';
 ?>
 
-<div class="auth-wrapper glass-panel">
-    <div class="auth-brand-panel">
-        <div class="auth-brand-logo">
-            <i class="fa-solid fa-tree"></i> <span>Eco<span>Fit</span></span>
+<div class="max-w-4xl mx-auto my-8 grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl border border-darkBorder bg-surfaceSolid/50 backdrop-blur-xl">
+    
+    <!-- Left Column: Branding Details (Hidden on small screens) -->
+    <div class="hidden md:flex flex-col justify-center p-8 bg-gradient-to-tr from-emerald-950/80 to-base text-gray-100 border-r border-darkBorder">
+        <div class="flex items-center gap-3 text-3xl font-black mb-6">
+            <i class="fa-solid fa-tree text-primary drop-shadow-[0_0_10px_var(--primary-glow)]"></i>
+            <span>Eco<span class="text-primary">Fit</span></span>
         </div>
-        <div class="auth-brand-tagline">
+        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
             Turn your real-world exercise into a thriving virtual garden.
-        </div>
-        <ul class="feature-list">
-            <li><i class="fa-solid fa-circle-check"></i> Complete customized daily exercise quests</li>
-            <li><i class="fa-solid fa-circle-check"></i> Earn gold points for walking, running, and yoga</li>
-            <li><i class="fa-solid fa-circle-check"></i> Spend points in the shop to purchase unique trees</li>
-            <li><i class="fa-solid fa-circle-check"></i> Design and plant your customized virtual garden grid</li>
+        </p>
+        <ul class="space-y-4">
+            <li class="flex items-center gap-3 text-sm text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> Complete customized daily exercise quests
+            </li>
+            <li class="flex items-center gap-3 text-sm text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> Earn gold points for walking, running, and yoga
+            </li>
+            <li class="flex items-center gap-3 text-sm text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> Spend points in the shop to purchase unique trees
+            </li>
+            <li class="flex items-center gap-3 text-sm text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> Design and plant your customized virtual garden grid
+            </li>
         </ul>
     </div>
     
-    <div class="auth-form-panel">
-        <div class="auth-tabs">
-            <button type="button" class="auth-tab <?php echo ($activeTab === 'login') ? 'active' : ''; ?>" onclick="switchAuthTab('login')">Login</button>
-            <button type="button" class="auth-tab <?php echo ($activeTab === 'register') ? 'active' : ''; ?>" onclick="switchAuthTab('register')">Register</button>
+    <!-- Right Column: Authentication Forms -->
+    <div class="p-8 flex flex-col justify-center">
+        <!-- Tabs -->
+        <div class="flex border-b border-darkBorder mb-6">
+            <button type="button" 
+                    id="tab-login"
+                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'login') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-white'; ?>" 
+                    onclick="switchAuthTab('login')">
+                Login
+            </button>
+            <button type="button" 
+                    id="tab-register"
+                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'register') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-white'; ?>" 
+                    onclick="switchAuthTab('register')">
+                Register
+            </button>
         </div>
         
         <?php if (!empty($error)): ?>
-            <div class="error-banner">
+            <div class="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 p-3 rounded-lg text-sm mb-6 animate-pulse">
                 <i class="fa-solid fa-triangle-exclamation"></i>
                 <span><?php echo htmlspecialchars($error); ?></span>
             </div>
         <?php endif; ?>
         
         <!-- Login Form -->
-        <form action="index.php" method="POST" id="login-form" class="auth-form <?php echo ($activeTab === 'login') ? 'active' : ''; ?>">
+        <form action="index.php" method="POST" id="login-form" class="<?php echo ($activeTab === 'login') ? '' : 'hidden'; ?> space-y-4">
             <input type="hidden" name="auth_type" value="login">
             
-            <div class="form-group">
-                <label class="form-label">Username</label>
-                <div class="form-input-wrapper">
-                    <i class="fa-regular fa-user"></i>
-                    <input type="text" name="username" class="form-control" placeholder="Enter username" required value="<?php echo ($activeTab === 'login') ? htmlspecialchars($username ?? '') : ''; ?>">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Username</label>
+                <div class="relative">
+                    <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" 
+                           name="username" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                           placeholder="Enter username" 
+                           required 
+                           value="<?php echo ($activeTab === 'login') ? htmlspecialchars($username ?? '') : ''; ?>">
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="form-input-wrapper">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" name="password" class="form-control" placeholder="Enter password" required>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="password" 
+                           name="password" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                           placeholder="Enter password" 
+                           required>
                 </div>
             </div>
             
-            <button type="submit" class="btn">
+            <button type="submit" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
                 <i class="fa-solid fa-right-to-bracket"></i> Sign In
             </button>
         </form>
         
         <!-- Register Form -->
-        <form action="index.php" method="POST" id="register-form" class="auth-form <?php echo ($activeTab === 'register') ? 'active' : ''; ?>">
+        <form action="index.php" method="POST" id="register-form" class="<?php echo ($activeTab === 'register') ? '' : 'hidden'; ?> space-y-4">
             <input type="hidden" name="auth_type" value="register">
             
-            <div class="form-group">
-                <label class="form-label">Username</label>
-                <div class="form-input-wrapper">
-                    <i class="fa-regular fa-user"></i>
-                    <input type="text" name="username" class="form-control" placeholder="Choose a username" required value="<?php echo ($activeTab === 'register') ? htmlspecialchars($username ?? '') : ''; ?>">
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Username</label>
+                <div class="relative">
+                    <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="text" 
+                           name="username" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                           placeholder="Choose a username" 
+                           required 
+                           value="<?php echo ($activeTab === 'register') ? htmlspecialchars($username ?? '') : ''; ?>">
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">Password</label>
-                <div class="form-input-wrapper">
-                    <i class="fa-solid fa-lock"></i>
-                    <input type="password" name="password" class="form-control" placeholder="Create password (min. 6 chars)" required>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="password" 
+                           name="password" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                           placeholder="Create password (min. 6 chars)" 
+                           required>
                 </div>
             </div>
             
-            <div class="form-group">
-                <label class="form-label">Confirm Password</label>
-                <div class="form-input-wrapper">
-                    <i class="fa-solid fa-shield-halved"></i>
-                    <input type="password" name="confirm_password" class="form-control" placeholder="Confirm your password" required>
+            <div>
+                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Confirm Password</label>
+                <div class="relative">
+                    <i class="fa-solid fa-shield-halved absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
+                    <input type="password" 
+                           name="confirm_password" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                           placeholder="Confirm your password" 
+                           required>
                 </div>
             </div>
             
-            <button type="submit" class="btn">
+            <button type="submit" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
                 <i class="fa-solid fa-user-plus"></i> Create Account
             </button>
         </form>
@@ -195,17 +240,21 @@ require_once 'includes/header.php';
 
 <script>
 function switchAuthTab(tab) {
-    // Hide all forms
-    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
-    // Remove active tab highlights
-    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    const formLogin = document.getElementById('login-form');
+    const formRegister = document.getElementById('register-form');
+    const btnLogin = document.getElementById('tab-login');
+    const btnRegister = document.getElementById('tab-register');
     
     if (tab === 'login') {
-        document.getElementById('login-form').classList.add('active');
-        document.querySelector('.auth-tab:nth-child(1)').classList.add('active');
+        formLogin.classList.remove('hidden');
+        formRegister.classList.add('hidden');
+        btnLogin.className = "flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 text-primary border-b-2 border-primary font-bold";
+        btnRegister.className = "flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 text-gray-400 hover:text-white";
     } else {
-        document.getElementById('register-form').classList.add('active');
-        document.querySelector('.auth-tab:nth-child(2)').classList.add('active');
+        formLogin.classList.add('hidden');
+        formRegister.classList.remove('hidden');
+        btnLogin.className = "flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 text-gray-400 hover:text-white";
+        btnRegister.className = "flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 text-primary border-b-2 border-primary font-bold";
     }
 }
 </script>

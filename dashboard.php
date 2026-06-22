@@ -56,55 +56,124 @@ $activePage = 'dashboard';
 require_once 'includes/header.php';
 ?>
 
-<div class="dashboard-grid">
-    <!-- Left Column: Quests & Exercises -->
-    <div class="dashboard-left">
-        <div class="glass-panel">
-            <h2 class="panel-title"><i class="fa-solid fa-person-running"></i> Daily Fitness Quests</h2>
+<!-- Mobile-first Stack Layout: Garden on Top for Mobile, Side-by-Side on Desktop -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+    
+    <!-- Virtual Garden Section (Prominent on top for mobile, right column on desktop) -->
+    <div class="col-span-1 lg:col-span-7 order-1 lg:order-2">
+        <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
+                <i class="fa-solid fa-seedling text-primary-light"></i> My Virtual Garden
+            </h2>
             
-            <div class="quests-list">
+            <div class="flex flex-col items-center gap-4">
+                <!-- Garden Grid Container (Responsive fit) -->
+                <div class="w-full max-w-md aspect-square bg-gradient-to-tr from-primary/5 to-transparent border border-darkBorder p-3 rounded-2xl flex items-center justify-center">
+                    <div class="grid grid-cols-6 grid-rows-6 gap-1 w-full h-full" id="garden-grid">
+                        <?php for ($y = 0; $y < 6; $y++): ?>
+                            <?php for ($x = 0; $x < 6; $x++): 
+                                $tree = $gardenGrid[$y][$x];
+                                $cellClass = $tree ? 'occupied' : 'empty';
+                            ?>
+                                <div class="garden-cell <?php echo $cellClass; ?> relative aspect-square bg-emerald-950/10 border border-emerald-950/20 hover:border-primary/50 hover:bg-emerald-950/20 rounded-lg flex items-center justify-center cursor-pointer transition-all duration-200" 
+                                     data-x="<?php echo $x; ?>" 
+                                     data-y="<?php echo $y; ?>"
+                                     <?php if (!$tree): ?> onclick="selectGardenCell(this)" <?php endif; ?>>
+                                    
+                                    <?php if ($tree): ?>
+                                        <div class="w-[85%] h-[85%] flex items-center justify-center" title="<?php echo htmlspecialchars($tree['tree_name']); ?> at (<?php echo $x; ?>, <?php echo $y; ?>)">
+                                            <?php echo get_tree_svg($tree['image_url']); ?>
+                                        </div>
+                                    <?php endif; ?>
+                                    
+                                    <span class="absolute bottom-1 right-1 text-[8px] text-gray-600 select-none pointer-events-none"><?php echo $x; ?>,<?php echo $y; ?></span>
+                                </div>
+                            <?php endfor; ?>
+                        <?php endfor; ?>
+                    </div>
+                </div>
+                
+                <!-- Action / Plant Panel Overlay -->
+                <div class="w-full min-h-[40px] flex justify-center items-center py-2">
+                    <div id="selection-prompt" class="text-sm text-gray-400 text-center flex items-center gap-2">
+                        <i class="fa-solid fa-arrow-pointer text-primary animate-pulse"></i>
+                        <span>Click any empty grass slot to buy and plant a tree.</span>
+                    </div>
+                    
+                    <div id="plant-panel" class="hidden items-center flex-wrap justify-center gap-3 animate-slideIn">
+                        <span class="text-sm font-semibold text-gray-300">Planting at (<strong id="selected-coords" class="text-primary-light">0,0</strong>):</span>
+                        <select id="quick-tree-select" class="bg-base border border-darkBorder text-white text-sm rounded-lg py-1.5 px-3 focus:outline-none focus:border-primary/50">
+                            <?php foreach ($shopTrees as $shopTree): ?>
+                                <option value="<?php echo $shopTree['id']; ?>">
+                                    <?php echo htmlspecialchars($shopTree['tree_name']); ?> (<?php echo $shopTree['cost_points']; ?> pts)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        <button class="bg-primary hover:bg-primary-light text-white text-xs font-bold py-1.5 px-4 rounded-lg flex items-center gap-1.5 transition-all duration-200" onclick="purchaseAndPlantTree()">
+                            <i class="fa-solid fa-leaf"></i> Plant Tree
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Daily Fitness Quests Section (Left column on desktop, bottom on mobile) -->
+    <div class="col-span-1 lg:col-span-5 order-2 lg:order-1">
+        <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-xl">
+            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
+                <i class="fa-solid fa-person-running text-primary-light"></i> Daily Fitness Quests
+            </h2>
+            
+            <div class="space-y-4">
                 <?php if (empty($quests)): ?>
-                    <p style="text-align: center; color: var(--text-muted); margin: 2rem 0;">No quests loaded. Database may need to be seeded.</p>
+                    <p class="text-center text-gray-500 my-8">No quests loaded. Database needs to be seeded.</p>
                 <?php else: ?>
                     <?php foreach ($quests as $quest): 
                         $percentage = min(100, round(($quest['progress'] / $quest['target_value']) * 100));
                         $isCompleted = (bool)$quest['is_completed'];
                     ?>
-                        <div class="quest-card <?php echo $isCompleted ? 'completed' : ''; ?>" id="quest-card-<?php echo $quest['user_quest_id']; ?>">
-                            <div class="quest-header">
-                                <div class="quest-info">
-                                    <h4><?php echo htmlspecialchars($quest['title']); ?></h4>
-                                    <p class="quest-desc"><?php echo htmlspecialchars($quest['description']); ?></p>
+                        <div class="border border-darkBorder bg-white/[0.01] hover:bg-white/[0.02] <?php echo $isCompleted ? 'border-primary/30 bg-primary/[0.01]' : ''; ?> rounded-xl p-4 transition-all duration-200" id="quest-card-<?php echo $quest['user_quest_id']; ?>">
+                            
+                            <!-- Card Header -->
+                            <div class="flex justify-between items-start gap-4">
+                                <div>
+                                    <h4 class="font-bold text-white text-sm sm:text-base leading-tight mb-1"><?php echo htmlspecialchars($quest['title']); ?></h4>
+                                    <p class="text-xs text-gray-400 leading-normal"><?php echo htmlspecialchars($quest['description']); ?></p>
                                 </div>
-                                <div class="quest-reward">
-                                    <i class="fa-solid fa-coins gold-coin"></i> +<?php echo $quest['points_reward']; ?> pts
+                                <div class="bg-accent/10 text-accent border border-accent/20 text-xs font-bold px-2 py-1 rounded flex items-center gap-1 shrink-0">
+                                    <i class="fa-solid fa-coins text-accent"></i> +<?php echo $quest['points_reward']; ?> pts
                                 </div>
                             </div>
                             
-                            <div class="quest-progress-container">
-                                <div class="progress-meta">
-                                    <span class="progress-pct"><?php echo $percentage; ?>% Complete</span>
-                                    <span class="progress-fraction" id="progress-val-<?php echo $quest['user_quest_id']; ?>">
+                            <!-- Progress Section -->
+                            <div class="mt-4 space-y-1">
+                                <div class="flex justify-between text-xs font-semibold">
+                                    <span class="text-gray-400"><?php echo $percentage; ?>% Complete</span>
+                                    <span class="text-white" id="progress-val-<?php echo $quest['user_quest_id']; ?>">
                                         <?php echo number_format($quest['progress']); ?> / <?php echo number_format($quest['target_value']); ?>
                                     </span>
                                 </div>
-                                <div class="progress-bar-outer">
-                                    <div class="progress-bar-inner" id="progress-bar-<?php echo $quest['user_quest_id']; ?>" style="width: <?php echo $percentage; ?>%;"></div>
+                                <div class="w-full h-2 bg-base rounded-full overflow-hidden relative">
+                                    <div class="h-full bg-gradient-to-r from-primary to-primary-light transition-all duration-500 rounded-full" id="progress-bar-<?php echo $quest['user_quest_id']; ?>" style="width: <?php echo $percentage; ?>%;"></div>
                                 </div>
                             </div>
                             
-                            <div class="quest-action" id="quest-action-<?php echo $quest['user_quest_id']; ?>">
+                            <!-- Actions / inputs -->
+                            <div class="mt-4 flex items-center gap-2 justify-end" id="quest-action-<?php echo $quest['user_quest_id']; ?>">
                                 <?php if ($isCompleted): ?>
-                                    <span class="status-badge"><i class="fa-solid fa-circle-check"></i> Completed</span>
+                                    <span class="text-xs font-bold text-primary-light flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check"></i> Completed
+                                    </span>
                                 <?php else: ?>
                                     <input type="number" 
                                            id="quest-input-<?php echo $quest['user_quest_id']; ?>" 
-                                           class="quest-input" 
+                                           class="bg-base border border-darkBorder text-white text-xs rounded-lg py-1.5 px-3 w-20 text-center focus:outline-none focus:border-primary/50" 
                                            placeholder="Value" 
                                            min="0" 
                                            max="<?php echo $quest['target_value']; ?>"
                                            value="<?php echo $quest['progress']; ?>">
-                                    <button class="btn btn-sm" onclick="updateQuestProgress(<?php echo $quest['user_quest_id']; ?>)">
+                                    <button class="bg-primary hover:bg-primary-light text-white text-xs font-bold py-1.5 px-4 rounded-lg transition-all duration-200" onclick="updateQuestProgress(<?php echo $quest['user_quest_id']; ?>)">
                                         Update
                                     </button>
                                 <?php endif; ?>
@@ -116,59 +185,6 @@ require_once 'includes/header.php';
         </div>
     </div>
     
-    <!-- Right Column: Interactive Garden -->
-    <div class="dashboard-right">
-        <div class="glass-panel">
-            <h2 class="panel-title"><i class="fa-solid fa-seedling"></i> My Virtual Garden</h2>
-            
-            <div class="garden-container">
-                <div class="garden-grid-wrapper">
-                    <div class="garden-grid" id="garden-grid">
-                        <?php for ($y = 0; $y < 6; $y++): ?>
-                            <?php for ($x = 0; $x < 6; $x++): 
-                                $tree = $gardenGrid[$y][$x];
-                                $cellClass = $tree ? 'occupied' : 'empty';
-                            ?>
-                                <div class="garden-cell <?php echo $cellClass; ?>" 
-                                     data-x="<?php echo $x; ?>" 
-                                     data-y="<?php echo $y; ?>"
-                                     <?php if (!$tree): ?> onclick="selectGardenCell(this)" <?php endif; ?>>
-                                    
-                                    <?php if ($tree): ?>
-                                        <div class="tree-wrapper" title="<?php echo htmlspecialchars($tree['tree_name']); ?> at (<?php echo $x; ?>, <?php echo $y; ?>)">
-                                            <?php echo get_tree_svg($tree['image_url']); ?>
-                                        </div>
-                                    <?php endif; ?>
-                                    
-                                    <span class="cell-coordinate"><?php echo $x; ?>,<?php echo $y; ?></span>
-                                </div>
-                            <?php endfor; ?>
-                        <?php endfor; ?>
-                    </div>
-                </div>
-                
-                <div class="garden-actions">
-                    <div id="selection-prompt" class="selection-prompt">
-                        <i class="fa-solid fa-arrow-pointer"></i> Click any empty grass slot to buy and plant a tree.
-                    </div>
-                    
-                    <div id="plant-panel" class="plant-control-panel" style="display: none;">
-                        <span class="selection-prompt">Planting at (<strong id="selected-coords">0,0</strong>):</span>
-                        <select id="quick-tree-select" class="quest-input" style="width: 150px; text-align: left;" onchange="updateSelectedTreeCost()">
-                            <?php foreach ($shopTrees as $shopTree): ?>
-                                <option value="<?php echo $shopTree['id']; ?>" data-cost="<?php echo $shopTree['cost_points']; ?>">
-                                    <?php echo htmlspecialchars($shopTree['tree_name']); ?> (<?php echo $shopTree['cost_points']; ?> pts)
-                                </option>
-                            <?php endforeach; ?>
-                        </select>
-                        <button class="btn btn-sm" onclick="purchaseAndPlantTree()">
-                            <i class="fa-solid fa-leaf"></i> Plant Tree
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
 </div>
 
 <?php require_once 'includes/footer.php'; ?>
