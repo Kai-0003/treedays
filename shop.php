@@ -1,4 +1,5 @@
 <?php
+require_once 'includes/lang.php';
 require_once 'includes/db.php';
 require_once 'includes/tree_svgs.php';
 
@@ -22,12 +23,11 @@ require_once 'includes/header.php';
 ?>
 
 <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-6 shadow-xl max-w-5xl mx-auto">
-    <h2 class="text-xl font-black text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
-        <i class="fa-solid fa-store text-primary"></i> Virtual Tree Shop
+    <h2 class="text-xl font-black text-gray-900 dark:text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
+        <i class="fa-solid fa-store text-primary"></i> <?php echo __('shop'); ?>
     </h2>
-    <p class="text-sm text-gray-400 mb-8 leading-relaxed">
-        Complete physical activities to earn points, then spend them here to purchase trees. 
-        Select a tree below to proceed to your garden and plant it!
+    <p class="text-sm text-gray-505 dark:text-gray-400 mb-8 leading-relaxed">
+        <?php echo __('shop_desc'); ?>
     </p>
     
     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
@@ -43,20 +43,20 @@ require_once 'includes/header.php';
                     </div>
                 </div>
                 
-                <h3 class="font-bold text-white text-base mb-2 truncate w-full"><?php echo htmlspecialchars($tree['tree_name']); ?></h3>
+                <h3 class="font-bold text-gray-900 dark:text-white text-base mb-2 truncate w-full"><?php echo htmlspecialchars(__($tree['tree_name'])); ?></h3>
                 
                 <div class="flex items-center gap-1.5 px-3 py-1 bg-accent/10 border border-accent/20 text-accent font-bold text-xs rounded-full mb-6">
                     <i class="fa-solid fa-coins"></i>
-                    <span><?php echo number_format($tree['cost_points']); ?> pts</span>
+                    <span><?php echo number_format($tree['cost_points']); ?> <?php echo __('pts'); ?></span>
                 </div>
                 
                 <?php if ($canAfford): ?>
                     <a href="dashboard.php?plant_tree_id=<?php echo $tree['id']; ?>" class="w-full bg-primary hover:bg-primary-light text-white text-xs font-bold py-2 rounded-lg transition-all duration-200 flex items-center justify-center gap-1">
-                        <i class="fa-solid fa-seedling"></i> Plant Now
+                        <i class="fa-solid fa-seedling"></i> <?php echo __('plant_now'); ?>
                     </a>
                 <?php else: ?>
                     <button class="w-full bg-darkBorder text-gray-500 text-xs font-bold py-2 rounded-lg cursor-not-allowed flex items-center justify-center gap-1" disabled>
-                        <i class="fa-solid fa-ban"></i> Insufficient Points
+                        <i class="fa-solid fa-ban"></i> <?php echo __('insufficient_points'); ?>
                     </button>
                 <?php endif; ?>
             </div>

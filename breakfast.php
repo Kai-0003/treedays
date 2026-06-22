@@ -1,4 +1,5 @@
 <?php
+require_once 'includes/lang.php';
 require_once 'includes/db.php';
 
 // Guarantee authentication
@@ -15,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
     $imagePath = null;
     
     if (empty($mealName) || $calories <= 0) {
-        $error = 'Please fill in the food name and enter a valid positive calorie count.';
+        $error = __('error_empty');
     } else {
         // Handle Photo Upload
         if (isset($_FILES['breakfast_photo']) && $_FILES['breakfast_photo']['error'] === UPLOAD_ERR_OK) {
@@ -34,6 +35,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['action']) && $_POST['
                 if ($fileSize < 5 * 1024 * 1024) {
                     $newFileName = uniqid('bf_') . '_' . time() . '.' . $fileExtension;
                     $uploadFileDir = __DIR__ . '/uploads/breakfast/';
+                    
+                    // Create directory if not exists
+                    if (!file_exists($uploadFileDir)) {
+                        mkdir($uploadFileDir, 0777, true);
+                    }
+                    
                     $dest_path = $uploadFileDir . $newFileName;
                     
                     if (move_uploaded_file($fileTmpPath, $dest_path)) {
@@ -87,11 +94,11 @@ require_once 'includes/header.php';
 
 <div class="max-w-5xl mx-auto space-y-6">
     <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-6 shadow-xl">
-        <h2 class="text-xl font-black text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
-            <i class="fa-solid fa-apple-whole text-primary"></i> Breakfast Logger
+        <h2 class="text-xl font-black text-gray-900 dark:text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
+            <i class="fa-solid fa-apple-whole text-primary"></i> <?php echo __('breakfast'); ?>
         </h2>
-        <p class="text-sm text-gray-400 mb-6">
-            Take a photo of your breakfast, record your calorie count, and track your healthy nutrition history.
+        <p class="text-sm text-gray-505 dark:text-gray-400 mb-6">
+            <?php echo __('bf_desc'); ?>
         </p>
 
         <!-- Main Grid Layout -->
@@ -99,8 +106,8 @@ require_once 'includes/header.php';
             
             <!-- Left Side: Log Meal Form (Input camera / photo file) -->
             <div class="col-span-1 lg:col-span-5 bg-base border border-darkBorder rounded-2xl p-6 shadow-md h-fit">
-                <h3 class="font-bold text-white text-base mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-plus text-primary-light"></i> Log Breakfast
+                <h3 class="font-bold text-gray-900 dark:text-white text-base mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-plus text-primary-light"></i> <?php echo __('log_bf_title'); ?>
                 </h3>
 
                 <?php if (!empty($error)): ?>
@@ -123,18 +130,18 @@ require_once 'includes/header.php';
 
                     <!-- Custom Camera / Photo Uploader Dropzone -->
                     <div>
-                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Breakfast Photo</label>
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('bf_photo'); ?></label>
                         <div onclick="document.getElementById('breakfast-photo').click()" 
-                             class="border-dashed border-2 border-darkBorder hover:border-primary/45 rounded-2xl cursor-pointer flex flex-col items-center justify-center p-5 bg-base/50 hover:bg-white/[0.01] transition-all text-center relative overflow-hidden min-h-[160px]"
-                             id="dropzone">
+                              class="border-dashed border-2 border-darkBorder hover:border-primary/45 rounded-2xl cursor-pointer flex flex-col items-center justify-center p-5 bg-base/50 hover:bg-white/[0.01] transition-all text-center relative overflow-hidden min-h-[160px]"
+                              id="dropzone">
                             
                             <!-- Preview Image element -->
                             <img id="image-preview" class="hidden absolute inset-0 w-full h-full object-cover z-10" />
 
                             <div class="flex flex-col items-center gap-2" id="upload-prompt">
                                 <i class="fa-solid fa-camera text-3xl text-gray-500"></i>
-                                <span class="text-xs text-gray-400 font-medium">Click to Snap Photo or Upload</span>
-                                <span class="text-[10px] text-gray-600">Supports JPG, PNG, WEBP (Max 5MB)</span>
+                                <span class="text-xs text-gray-500 dark:text-gray-400 font-medium"><?php echo __('bf_prompt'); ?></span>
+                                <span class="text-[10px] text-gray-400 dark:text-gray-600"><?php echo __('bf_formats'); ?></span>
                             </div>
                         </div>
                         <input type="file" 
@@ -147,41 +154,41 @@ require_once 'includes/header.php';
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Food Name</label>
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('food_name'); ?></label>
                         <input type="text" 
                                name="meal_name" 
-                               class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none transition-all" 
+                               class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none transition-all" 
                                placeholder="e.g. Avocado Toast & Eggs" 
                                required>
                     </div>
 
                     <div>
-                        <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Calories (kcal)</label>
+                        <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('calories_lbl'); ?></label>
                         <input type="number" 
                                name="calories" 
-                               class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2 px-3 text-sm text-white focus:outline-none transition-all" 
+                               class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2 px-3 text-sm text-gray-900 dark:text-white focus:outline-none transition-all" 
                                placeholder="e.g. 350" 
                                min="1" 
                                required>
                     </div>
 
                     <button type="submit" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
-                        <i class="fa-solid fa-cloud-arrow-up"></i> Record Meal
+                        <i class="fa-solid fa-cloud-arrow-up"></i> <?php echo __('record_meal_btn'); ?>
                     </button>
                 </form>
             </div>
 
             <!-- Right Side: Meal Logs History with Thumbnail and Created At -->
             <div class="col-span-1 lg:col-span-7 bg-base border border-darkBorder rounded-2xl p-6 shadow-md">
-                <h3 class="font-bold text-white text-base mb-4 flex items-center gap-2">
-                    <i class="fa-solid fa-clock-rotate-left text-primary-light"></i> Nutrition History
+                <h3 class="font-bold text-gray-900 dark:text-white text-base mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-primary-light"></i> <?php echo __('nutrition_history'); ?>
                 </h3>
 
                 <div class="space-y-3 max-h-[500px] overflow-y-auto pr-1">
                     <?php if (empty($historyLogs)): ?>
                         <div class="text-center py-12 text-gray-500 text-sm">
-                            <i class="fa-solid fa-utensils text-2xl mb-2 text-gray-700 block"></i>
-                            No meals logged yet. Record your breakfast to start!
+                            <i class="fa-solid fa-utensils text-2xl mb-2 text-gray-400 block"></i>
+                            <?php echo __('no_meals_yet'); ?>
                         </div>
                     <?php else: ?>
                         <?php foreach ($historyLogs as $log): ?>
@@ -200,7 +207,7 @@ require_once 'includes/header.php';
 
                                 <!-- Log Info -->
                                 <div class="flex-1 min-w-0">
-                                    <h4 class="font-bold text-white text-sm truncate leading-tight mb-1">
+                                    <h4 class="font-bold text-gray-950 dark:text-white text-sm truncate leading-tight mb-1">
                                         <?php echo htmlspecialchars($log['meal_name']); ?>
                                     </h4>
                                     <!-- Created At Timestamp -->

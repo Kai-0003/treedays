@@ -62,8 +62,8 @@ require_once 'includes/header.php';
     <!-- Virtual Garden Section (Prominent on top for mobile, right column on desktop) -->
     <div class="col-span-1 lg:col-span-7 order-1 lg:order-2">
         <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-xl">
-            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
-                <i class="fa-solid fa-seedling text-primary-light"></i> My Virtual Garden
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
+                <i class="fa-solid fa-seedling text-primary"></i> <?php echo __('virtual_garden_title'); ?>
             </h2>
             
             <div class="flex flex-col items-center gap-4">
@@ -81,7 +81,7 @@ require_once 'includes/header.php';
                                      <?php if (!$tree): ?> onclick="selectGardenCell(this)" <?php endif; ?>>
                                     
                                     <?php if ($tree): ?>
-                                        <div class="w-[85%] h-[85%] flex items-center justify-center" title="<?php echo htmlspecialchars($tree['tree_name']); ?> at (<?php echo $x; ?>, <?php echo $y; ?>)">
+                                        <div class="w-[85%] h-[85%] flex items-center justify-center" title="<?php echo htmlspecialchars(__($tree['tree_name'])); ?> <?php echo __('planting_at'); ?> (<?php echo $x; ?>, <?php echo $y; ?>)">
                                             <?php echo get_tree_svg($tree['image_url']); ?>
                                         </div>
                                     <?php endif; ?>
@@ -95,22 +95,22 @@ require_once 'includes/header.php';
                 
                 <!-- Action / Plant Panel Overlay -->
                 <div class="w-full min-h-[40px] flex justify-center items-center py-2">
-                    <div id="selection-prompt" class="text-sm text-gray-400 text-center flex items-center gap-2">
+                    <div id="selection-prompt" class="text-sm text-gray-500 dark:text-gray-400 text-center flex items-center gap-2">
                         <i class="fa-solid fa-arrow-pointer text-primary animate-pulse"></i>
-                        <span>Click any empty grass slot to buy and plant a tree.</span>
+                        <span><?php echo __('click_slot'); ?></span>
                     </div>
                     
                     <div id="plant-panel" class="hidden items-center flex-wrap justify-center gap-3 animate-slideIn">
-                        <span class="text-sm font-semibold text-gray-300">Planting at (<strong id="selected-coords" class="text-primary-light">0,0</strong>):</span>
-                        <select id="quick-tree-select" class="bg-base border border-darkBorder text-white text-sm rounded-lg py-1.5 px-3 focus:outline-none focus:border-primary/50">
+                        <span class="text-sm font-semibold text-gray-700 dark:text-gray-300"><?php echo __('planting_at'); ?> (<strong id="selected-coords" class="text-primary">0,0</strong>):</span>
+                        <select id="quick-tree-select" class="bg-base border border-darkBorder text-gray-900 dark:text-white text-sm rounded-lg py-1.5 px-3 focus:outline-none focus:border-primary/50">
                             <?php foreach ($shopTrees as $shopTree): ?>
                                 <option value="<?php echo $shopTree['id']; ?>">
-                                    <?php echo htmlspecialchars($shopTree['tree_name']); ?> (<?php echo $shopTree['cost_points']; ?> pts)
+                                    <?php echo htmlspecialchars(__($shopTree['tree_name'])); ?> (<?php echo $shopTree['cost_points']; ?> <?php echo __('pts'); ?>)
                                 </option>
                             <?php endforeach; ?>
                         </select>
                         <button class="bg-primary hover:bg-primary-light text-white text-xs font-bold py-1.5 px-4 rounded-lg flex items-center gap-1.5 transition-all duration-200" onclick="purchaseAndPlantTree()">
-                            <i class="fa-solid fa-leaf"></i> Plant Tree
+                            <i class="fa-solid fa-leaf"></i> <?php echo __('plant_tree_btn'); ?>
                         </button>
                     </div>
                 </div>
@@ -121,8 +121,8 @@ require_once 'includes/header.php';
     <!-- Daily Fitness Quests Section (Left column on desktop, bottom on mobile) -->
     <div class="col-span-1 lg:col-span-5 order-2 lg:order-1">
         <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-4 sm:p-6 shadow-xl">
-            <h2 class="text-lg font-bold text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
-                <i class="fa-solid fa-person-running text-primary-light"></i> Daily Fitness Quests
+            <h2 class="text-lg font-bold text-gray-900 dark:text-white mb-4 flex items-center gap-2 border-b border-darkBorder pb-3">
+                <i class="fa-solid fa-person-running text-primary"></i> <?php echo __('daily_quests_title'); ?>
             </h2>
             
             <div class="space-y-4">
@@ -138,19 +138,19 @@ require_once 'includes/header.php';
                             <!-- Card Header -->
                             <div class="flex justify-between items-start gap-4">
                                 <div>
-                                    <h4 class="font-bold text-white text-sm sm:text-base leading-tight mb-1"><?php echo htmlspecialchars($quest['title']); ?></h4>
-                                    <p class="text-xs text-gray-400 leading-normal"><?php echo htmlspecialchars($quest['description']); ?></p>
+                                    <h4 class="font-bold text-gray-900 dark:text-white text-sm sm:text-base leading-tight mb-1"><?php echo htmlspecialchars(__($quest['title'])); ?></h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400 leading-normal"><?php echo htmlspecialchars(__($quest['description'])); ?></p>
                                 </div>
                                 <div class="bg-accent/10 text-accent border border-accent/20 text-xs font-bold px-2 py-1 rounded flex items-center gap-1 shrink-0">
-                                    <i class="fa-solid fa-coins text-accent"></i> +<?php echo $quest['points_reward']; ?> pts
+                                    <i class="fa-solid fa-coins text-accent"></i> +<?php echo $quest['points_reward']; ?> <?php echo __('pts'); ?>
                                 </div>
                             </div>
                             
                             <!-- Progress Section -->
                             <div class="mt-4 space-y-1">
                                 <div class="flex justify-between text-xs font-semibold">
-                                    <span class="text-gray-400"><?php echo $percentage; ?>% Complete</span>
-                                    <span class="text-white" id="progress-val-<?php echo $quest['user_quest_id']; ?>">
+                                    <span class="text-gray-500 dark:text-gray-400"><?php echo $percentage; ?>% <?php echo __('complete_pct'); ?></span>
+                                    <span class="text-gray-950 dark:text-white" id="progress-val-<?php echo $quest['user_quest_id']; ?>">
                                         <?php echo number_format($quest['progress']); ?> / <?php echo number_format($quest['target_value']); ?>
                                     </span>
                                 </div>
@@ -162,19 +162,19 @@ require_once 'includes/header.php';
                             <!-- Actions / inputs -->
                             <div class="mt-4 flex items-center gap-2 justify-end" id="quest-action-<?php echo $quest['user_quest_id']; ?>">
                                 <?php if ($isCompleted): ?>
-                                    <span class="text-xs font-bold text-primary-light flex items-center gap-1">
-                                        <i class="fa-solid fa-circle-check"></i> Completed
+                                    <span class="text-xs font-bold text-primary flex items-center gap-1">
+                                        <i class="fa-solid fa-circle-check"></i> <?php echo __('completed_badge'); ?>
                                     </span>
                                 <?php else: ?>
                                     <input type="number" 
                                            id="quest-input-<?php echo $quest['user_quest_id']; ?>" 
-                                           class="bg-base border border-darkBorder text-white text-xs rounded-lg py-1.5 px-3 w-20 text-center focus:outline-none focus:border-primary/50" 
-                                           placeholder="Value" 
+                                           class="bg-base border border-darkBorder text-gray-900 dark:text-white text-xs rounded-lg py-1.5 px-3 w-20 text-center focus:outline-none focus:border-primary/50" 
+                                           placeholder="<?php echo __('value_placeholder'); ?>" 
                                            min="0" 
                                            max="<?php echo $quest['target_value']; ?>"
                                            value="<?php echo $quest['progress']; ?>">
                                     <button class="bg-primary hover:bg-primary-light text-white text-xs font-bold py-1.5 px-4 rounded-lg transition-all duration-200" onclick="updateQuestProgress(<?php echo $quest['user_quest_id']; ?>)">
-                                        Update
+                                        <?php echo __('update_btn'); ?>
                                     </button>
                                 <?php endif; ?>
                             </div>

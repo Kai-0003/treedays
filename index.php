@@ -1,4 +1,5 @@
 <?php
+require_once 'includes/lang.php';
 require_once 'includes/db.php';
 
 // Handle logout action
@@ -25,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $password = $_POST['password'] ?? '';
         
         if (empty($username) || empty($password)) {
-            $error = 'Please fill in all fields.';
+            $error = __('error_empty');
         } else {
             // Find user securely
             $stmt = $pdo->prepare("SELECT id, username, password_hash FROM users WHERE username = ?");
@@ -43,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 header("Location: dashboard.php");
                 exit;
             } else {
-                $error = 'Invalid username or password.';
+                $error = __('error_invalid');
             }
         }
     } elseif (isset($_POST['auth_type']) && $_POST['auth_type'] === 'register') {
@@ -53,13 +54,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $confirmPassword = $_POST['confirm_password'] ?? '';
         
         if (empty($username) || empty($password) || empty($confirmPassword)) {
-            $error = 'Please fill in all fields.';
+            $error = __('error_empty');
         } elseif (strlen($username) < 3) {
-            $error = 'Username must be at least 3 characters.';
+            $error = __('error_short_uname');
         } elseif (strlen($password) < 6) {
-            $error = 'Password must be at least 6 characters.';
+            $error = __('error_short_pwd');
         } elseif ($password !== $confirmPassword) {
-            $error = 'Passwords do not match.';
+            $error = __('error_pwd_match');
         } else {
             // Check if username already exists
             $stmt = $pdo->prepare("SELECT COUNT(*) FROM users WHERE username = ?");
@@ -67,7 +68,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $exists = $stmt->fetchColumn() > 0;
             
             if ($exists) {
-                $error = 'Username is already taken.';
+                $error = __('error_taken');
             } else {
                 // Register user
                 try {
@@ -107,26 +108,26 @@ require_once 'includes/header.php';
 <div class="max-w-4xl mx-auto my-8 grid grid-cols-1 md:grid-cols-2 rounded-2xl overflow-hidden shadow-2xl border border-darkBorder bg-surfaceSolid/50 backdrop-blur-xl">
     
     <!-- Left Column: Branding Details (Hidden on small screens) -->
-    <div class="hidden md:flex flex-col justify-center p-8 bg-gradient-to-tr from-emerald-950/80 to-base text-gray-100 border-r border-darkBorder">
-        <div class="flex items-center gap-3 text-3xl font-black mb-6">
+    <div class="hidden md:flex flex-col justify-center p-8 bg-gradient-to-tr from-emerald-950/80 to-base text-gray-900 dark:text-gray-100 border-r border-darkBorder">
+        <div class="flex items-center gap-3 text-3xl font-black mb-6 text-gray-900 dark:text-white">
             <i class="fa-solid fa-tree text-primary drop-shadow-[0_0_10px_var(--primary-glow)]"></i>
             <span>Eco<span class="text-primary">Fit</span></span>
         </div>
-        <p class="text-gray-400 text-lg mb-8 leading-relaxed">
-            Turn your real-world exercise into a thriving virtual garden.
+        <p class="text-gray-600 dark:text-gray-400 text-lg mb-8 leading-relaxed">
+            <?php echo __('turn_exercise'); ?>
         </p>
         <ul class="space-y-4">
-            <li class="flex items-center gap-3 text-sm text-gray-300">
-                <i class="fa-solid fa-circle-check text-primary"></i> Complete customized daily exercise quests
+            <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> <?php echo __('feature_1'); ?>
             </li>
-            <li class="flex items-center gap-3 text-sm text-gray-300">
-                <i class="fa-solid fa-circle-check text-primary"></i> Earn gold points for walking, running, and yoga
+            <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> <?php echo __('feature_2'); ?>
             </li>
-            <li class="flex items-center gap-3 text-sm text-gray-300">
-                <i class="fa-solid fa-circle-check text-primary"></i> Spend points in the shop to purchase unique trees
+            <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> <?php echo __('feature_3'); ?>
             </li>
-            <li class="flex items-center gap-3 text-sm text-gray-300">
-                <i class="fa-solid fa-circle-check text-primary"></i> Design and plant your customized virtual garden grid
+            <li class="flex items-center gap-3 text-sm text-gray-700 dark:text-gray-300">
+                <i class="fa-solid fa-circle-check text-primary"></i> <?php echo __('feature_4'); ?>
             </li>
         </ul>
     </div>
@@ -137,15 +138,15 @@ require_once 'includes/header.php';
         <div class="flex border-b border-darkBorder mb-6">
             <button type="button" 
                     id="tab-login"
-                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'login') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-white'; ?>" 
+                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'login') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'; ?>" 
                     onclick="switchAuthTab('login')">
-                Login
+                <?php echo __('login'); ?>
             </button>
             <button type="button" 
                     id="tab-register"
-                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'register') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-white'; ?>" 
+                    class="flex-1 pb-3 text-center text-sm font-semibold transition-all duration-200 <?php echo ($activeTab === 'register') ? 'text-primary border-b-2 border-primary font-bold' : 'text-gray-400 hover:text-gray-900 dark:hover:text-white'; ?>" 
                     onclick="switchAuthTab('register')">
-                Register
+                <?php echo __('register'); ?>
             </button>
         </div>
         
@@ -161,32 +162,32 @@ require_once 'includes/header.php';
             <input type="hidden" name="auth_type" value="login">
             
             <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Username</label>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('username'); ?></label>
                 <div class="relative">
                     <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                     <input type="text" 
                            name="username" 
-                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
-                           placeholder="Enter username" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
+                           placeholder="<?php echo __('username'); ?>" 
                            required 
                            value="<?php echo ($activeTab === 'login') ? htmlspecialchars($username ?? '') : ''; ?>">
                 </div>
             </div>
             
             <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('password'); ?></label>
                 <div class="relative">
                     <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                     <input type="password" 
                            name="password" 
-                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
-                           placeholder="Enter password" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
+                           placeholder="<?php echo __('password'); ?>" 
                            required>
                 </div>
             </div>
             
             <button type="submit" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
-                <i class="fa-solid fa-right-to-bracket"></i> Sign In
+                <i class="fa-solid fa-right-to-bracket"></i> <?php echo __('signin'); ?>
             </button>
         </form>
         
@@ -195,44 +196,44 @@ require_once 'includes/header.php';
             <input type="hidden" name="auth_type" value="register">
             
             <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Username</label>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('username'); ?></label>
                 <div class="relative">
                     <i class="fa-regular fa-user absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                     <input type="text" 
                            name="username" 
-                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
-                           placeholder="Choose a username" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
+                           placeholder="<?php echo __('username'); ?>" 
                            required 
                            value="<?php echo ($activeTab === 'register') ? htmlspecialchars($username ?? '') : ''; ?>">
                 </div>
             </div>
             
             <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Password</label>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('password'); ?></label>
                 <div class="relative">
                     <i class="fa-solid fa-lock absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                     <input type="password" 
                            name="password" 
-                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
-                           placeholder="Create password (min. 6 chars)" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
+                           placeholder="<?php echo __('password'); ?>" 
                            required>
                 </div>
             </div>
             
             <div>
-                <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Confirm Password</label>
+                <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('confirm_password'); ?></label>
                 <div class="relative">
                     <i class="fa-solid fa-shield-halved absolute left-3 top-1/2 -translate-y-1/2 text-gray-500"></i>
                     <input type="password" 
                            name="confirm_password" 
-                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-white focus:outline-none transition-all duration-200" 
-                           placeholder="Confirm your password" 
+                           class="w-full bg-base border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 pl-10 pr-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
+                           placeholder="<?php echo __('confirm_password'); ?>" 
                            required>
                 </div>
             </div>
             
             <button type="submit" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
-                <i class="fa-solid fa-user-plus"></i> Create Account
+                <i class="fa-solid fa-user-plus"></i> <?php echo __('create_account'); ?>
             </button>
         </form>
     </div>

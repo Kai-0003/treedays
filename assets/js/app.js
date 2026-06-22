@@ -17,6 +17,29 @@ function toggleProfileDropdown() {
 }
 
 /**
+ * Toggle light/dark theme modes
+ */
+function toggleThemeMode() {
+    const html = document.documentElement;
+    const isDark = html.classList.contains('dark');
+    const newTheme = isDark ? 'light' : 'dark';
+    
+    if (newTheme === 'dark') {
+        html.classList.remove('light');
+        html.classList.add('dark');
+    } else {
+        html.classList.remove('dark');
+        html.classList.add('light');
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('theme', newTheme);
+    
+    // Save to Cookie (1 year expiry)
+    document.cookie = `theme=${newTheme}; max-age=${365 * 24 * 60 * 60}; path=/`;
+}
+
+/**
  * Toggle mobile side drawer and backdrop
  */
 function toggleMobileMenu() {

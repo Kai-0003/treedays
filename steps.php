@@ -25,11 +25,11 @@ require_once 'includes/header.php';
 
 <div class="max-w-4xl mx-auto space-y-6">
     <div class="bg-surfaceSolid/50 border border-darkBorder backdrop-blur-xl rounded-2xl p-6 shadow-xl">
-        <h2 class="text-xl font-black text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
-            <i class="fa-solid fa-shoe-prints text-primary"></i> Steps Tracker
+        <h2 class="text-xl font-black text-gray-900 dark:text-white mb-2 flex items-center gap-2 border-b border-darkBorder pb-4">
+            <i class="fa-solid fa-shoe-prints text-primary"></i> <?php echo __('steps'); ?>
         </h2>
-        <p class="text-sm text-gray-400 mb-6">
-            Log your daily steps. Our system will calculate your distance walked and calories burned.
+        <p class="text-sm text-gray-500 dark:text-gray-400 mb-6">
+            <?php echo __('steps_desc'); ?>
         </p>
 
         <!-- Grid Layout -->
@@ -37,8 +37,8 @@ require_once 'includes/header.php';
             
             <!-- Left Side: Interactive Circular Progress & Live Stats -->
             <div class="bg-base border border-darkBorder rounded-2xl p-6 flex flex-col items-center justify-between">
-                <h3 class="font-bold text-white text-base mb-4 self-start flex items-center gap-2">
-                    <i class="fa-solid fa-gauge-high text-primary-light"></i> Today's Step Metrics
+                <h3 class="font-bold text-gray-900 dark:text-white text-base mb-4 self-start flex items-center gap-2">
+                    <i class="fa-solid fa-gauge-high text-primary-light"></i> <?php echo __('step_metrics'); ?>
                 </h3>
                 
                 <!-- Circular Progress -->
@@ -61,23 +61,23 @@ require_once 'includes/header.php';
                                 class="transition-all duration-1000 ease-out" />
                     </svg>
                     <div class="absolute flex flex-col items-center justify-center text-center">
-                        <span class="text-3xl font-black text-white" id="step-count-display"><?php echo number_format($currentSteps); ?></span>
-                        <span class="text-[10px] text-gray-500 uppercase tracking-wider">steps today</span>
+                        <span class="text-3xl font-black text-gray-905 dark:text-white" id="step-count-display"><?php echo number_format($currentSteps); ?></span>
+                        <span class="text-[10px] text-gray-500 uppercase tracking-wider"><?php echo __('steps_today'); ?></span>
                     </div>
                 </div>
 
                 <!-- Live Computed Stats Badges -->
                 <div class="w-full grid grid-cols-2 gap-3 mt-4">
                     <div class="bg-surfaceSolid/40 border border-darkBorder/40 p-3 rounded-xl text-center">
-                        <p class="text-[10px] text-gray-500 uppercase font-semibold">Distance</p>
-                        <p class="text-base font-black text-white" id="distance-display">
-                            <?php echo number_format($currentSteps * 0.0008, 2); ?> <span class="text-xs font-normal text-gray-400">km</span>
+                        <p class="text-[10px] text-gray-500 uppercase font-semibold"><?php echo __('distance'); ?></p>
+                        <p class="text-base font-black text-gray-950 dark:text-white" id="distance-display">
+                            <?php echo number_format($currentSteps * 0.0008, 2); ?> <span class="text-xs font-normal text-gray-500 dark:text-gray-400">km</span>
                         </p>
                     </div>
                     <div class="bg-surfaceSolid/40 border border-darkBorder/40 p-3 rounded-xl text-center">
-                        <p class="text-[10px] text-gray-500 uppercase font-semibold">Calories</p>
-                        <p class="text-base font-black text-white" id="calories-display">
-                            <?php echo number_format($currentSteps * 0.04, 1); ?> <span class="text-xs font-normal text-gray-400">kcal</span>
+                        <p class="text-[10px] text-gray-500 uppercase font-semibold"><?php echo __('calories'); ?></p>
+                        <p class="text-base font-black text-gray-950 dark:text-white" id="calories-display">
+                            <?php echo number_format($currentSteps * 0.04, 1); ?> <span class="text-xs font-normal text-gray-500 dark:text-gray-400">kcal</span>
                         </p>
                     </div>
                 </div>
@@ -86,19 +86,19 @@ require_once 'includes/header.php';
             <!-- Right Side: Log Steps Form -->
             <div class="bg-base border border-darkBorder rounded-2xl p-6 flex flex-col justify-between">
                 <div>
-                    <h3 class="font-bold text-white text-base mb-2 flex items-center gap-2">
-                        <i class="fa-solid fa-plus text-primary-light"></i> Log Step Count
+                    <h3 class="font-bold text-gray-900 dark:text-white text-base mb-2 flex items-center gap-2">
+                        <i class="fa-solid fa-plus text-primary-light"></i> <?php echo __('log_steps_title'); ?>
                     </h3>
-                    <p class="text-xs text-gray-400 mb-6">
-                        Enter your updated absolute step count below. Your distance and calories will calculate dynamically as you type.
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mb-6">
+                        <?php echo __('log_steps_desc'); ?>
                     </p>
 
                     <div class="space-y-4">
                         <div>
-                            <label class="block text-xs font-semibold text-gray-400 uppercase tracking-wider mb-2">Step Count</label>
+                            <label class="block text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2"><?php echo __('steps'); ?></label>
                             <input type="number" 
                                    id="step-input" 
-                                   class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 px-4 text-sm text-white focus:outline-none transition-all duration-200" 
+                                   class="w-full bg-surfaceSolid border border-darkBorder focus:border-primary/50 focus:ring-1 focus:ring-primary/20 rounded-lg py-2.5 px-4 text-sm text-gray-900 dark:text-white focus:outline-none transition-all duration-200" 
                                    placeholder="e.g. 5000" 
                                    min="0"
                                    value="<?php echo $currentSteps; ?>"
@@ -112,11 +112,11 @@ require_once 'includes/header.php';
                         <input type="hidden" id="user-quest-id" value="<?php echo $morningWalkQuest['user_quest_id']; ?>">
                         <?php if ($morningWalkQuest['is_completed']): ?>
                             <div class="w-full py-3 rounded-lg text-center bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 text-sm font-bold flex items-center justify-center gap-2">
-                                <i class="fa-solid fa-circle-check animate-bounce"></i> Morning Walk Completed for Today!
+                                <i class="fa-solid fa-circle-check animate-bounce"></i> <?php echo __('Morning Walk') . ' ' . __('completed_badge') . '!'; ?>
                             </div>
                         <?php else: ?>
                             <button onclick="submitSteps()" class="w-full py-2.5 rounded-lg text-sm font-bold text-white bg-primary hover:bg-primary-light transition-all duration-200 flex items-center justify-center gap-2 shadow-lg shadow-primary/20 hover:scale-[1.01]">
-                                <i class="fa-solid fa-cloud-arrow-up"></i> Save & Log Steps
+                                <i class="fa-solid fa-cloud-arrow-up"></i> <?php echo __('save_log_btn'); ?>
                             </button>
                         <?php endif; ?>
                     <?php else: ?>
