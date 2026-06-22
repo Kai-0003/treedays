@@ -50,7 +50,9 @@ try {
     $newTotalPoints = 0;
 
     // Start Transaction for atomic updates
-    $pdo->beginTransaction();
+    if (!$pdo->inTransaction()) {
+        $pdo->beginTransaction();
+    }
 
     if ($newlyCompleted) {
         $pointsAwarded = $quest['points_reward'];
@@ -74,7 +76,9 @@ try {
     }
 
     // Commit Transaction
-    $pdo->commit();
+    if ($pdo->inTransaction()) {
+        $pdo->commit();
+    }
 
     echo json_encode([
         'success' => true,

@@ -65,7 +65,9 @@ try {
     }
 
     // Start Transaction
-    $pdo->beginTransaction();
+    if (!$pdo->inTransaction()) {
+        $pdo->beginTransaction();
+    }
 
     // Deduct points
     $stmtDeduct = $pdo->prepare("UPDATE users SET total_points = total_points - ? WHERE id = ?");
@@ -84,7 +86,9 @@ try {
     $newTotalPoints = $stmtNewPoints->fetchColumn();
 
     // Commit Transaction
-    $pdo->commit();
+    if ($pdo->inTransaction()) {
+        $pdo->commit();
+    }
 
     echo json_encode([
         'success' => true,

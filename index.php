@@ -72,14 +72,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             } else {
                 // Register user
                 try {
-                    $pdo->beginTransaction();
+                    if (!$pdo->inTransaction()) {
+                        $pdo->beginTransaction();
+                    }
                     
                     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
                     $stmtInsert = $pdo->prepare("INSERT INTO users (username, password_hash, total_points) VALUES (?, ?, 0)");
                     $stmtInsert->execute([$username, $passwordHash]);
                     $newUserId = $pdo->lastInsertId();
                     
-                    $pdo->commit();
+                    if ($pdo->inTransaction()) {
+                        $pdo->commit();
+                    }
                     
                     // Set session and log them in
                     $_SESSION['user_id'] = $newUserId;
